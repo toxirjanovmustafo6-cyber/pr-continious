@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Present Continuous · Hozirgi davomli zamon</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@600;700;800;900&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<style>
+		:root {
+			--ink: #1B2330;
+			--muted: #5E6A7D;
+			--line: #DCE1E9;
+			--bg: #F4F6F9;
+			--card: #fff;
+			--accent: #2F5FD0;
+			--accent-d: #254CA8;
+			--accent-soft: #E7EEFC;
+			--ok: #1F7A45;
+			--ok-soft: #E2F3E9;
+			--bad: #B8342A;
+			--bad-soft: #FAE6E3;
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0
+		}
+
+		html,
+		body {
+			height: 100%
+		}
+
+		body {
+			font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+			color: var(--ink);
+			overflow: hidden;
+			background: #11161F
+		}
+
+		button {
+			font-family: inherit;
+			cursor: pointer;
+			border: 0;
+			color: inherit;
+			background: none
+		}
+
+		input {
+			font-family: inherit
+		}
+
+		[hidden] {
+			display: none !important
+		}
+
+		h1,
+		h2,
+		h3,
+		h4 {
+			font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+			font-weight: 600;
+			line-height: 1.1
+		}
+
+		:focus-visible {
+			outline: 3px solid var(--accent);
+			outline-offset: 3px
+		}
+
+		/* ===== Language switching (pure CSS) =====
+   .en  = English explanation   .uz = Uzbek explanation   .tr = Uzbek translation of an English example */
+		.uz,
+		.tr {
+			display: block;
+			font-size: max(15px, .62em);
+			font-weight: 700;
+			opacity: .75;
+			line-height: 1.25;
+			margin-top: .2em;
+			font-family: 'Nunito', system-ui, sans-serif
+		}
+
+		body[data-lang=en] .uz,
+		body[data-lang=en] .tr {
+			display: none
+		}
+
+		body[data-lang=uz] .en {
+			display: none
+		}
+
+		body[data-lang=uz] .uz {
+			font-size: 1em;
+			opacity: 1;
+			margin: 0;
+			font-weight: inherit;
+			font-family: inherit
+		}
+
+		/* ===== Stage ===== */
+		#stage {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 1280px;
+			height: 720px;
+			transform-origin: center center;
+			background: var(--bg);
+			overflow: hidden;
+			border-radius: 24px;
+			box-shadow: 0 30px 80px rgba(0, 0, 0, .5)
+		}
+
+		#progress {
+			position: absolute;
+			left: 0;
+			top: 0;
+			height: 6px;
+			width: 11%;
+			z-index: 40;
+			background: var(--accent);
+			border-radius: 0 6px 6px 0;
+			transition: width .5s ease
+		}
+
+		.slide {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 1280px;
+			height: 656px;
+			padding: 36px 64px 0;
+			opacity: 0;
+			visibility: hidden;
+			transform: translateX(60px);
+			overflow: hidden;
+			transition: opacity .4s ease, transform .4s ease, visibility 0s .4s;
+		}
+
+		.slide.past {
+			transform: translateX(-60px)
+		}
+
+		.slide.active {
+			opacity: 1;
+			visibility: visible;
+			transform: none;
+			transition: opacity .4s ease, transform .4s ease, visibility 0s
+		}
+
+		.head {
+			margin-bottom: 18px;
+			display: flex;
+			align-items: flex-end;
+			justify-content: space-between;
+			gap: 24px
+		}
+
+		.head h2 {
+			font-size: 44px
+		}
+
+		/* ===== Buttons ===== */
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			padding: 12px 26px;
+			border-radius: 16px;
+			font-weight: 900;
+			font-size: 20px;
+			color: #fff;
+			background: var(--accent);
+			box-shadow: 0 4px 0 var(--accent-d);
+			transition: transform .1s, box-shadow .1s, filter .15s;
+			text-align: left
+		}
+
+		.btn:hover {
+			filter: brightness(1.08)
+		}
+
+		.btn:active {
+			transform: translateY(3px);
+			box-shadow: 0 1px 0 var(--accent-d)
+		}
+
+		.btn:disabled {
+			opacity: .4;
+			cursor: not-allowed;
+			filter: none
+		}
+
+		.btn-light {
+			background: #fff;
+			color: var(--ink);
+			box-shadow: 0 4px 0 #AEB8CA
+		}
+
+		.btn-light:active {
+			box-shadow: 0 1px 0 #AEB8CA
+		}
+
+		.btn-ghost {
+			background: #fff;
+			color: var(--ink);
+			border: 2px solid var(--line);
+			box-shadow: 0 4px 0 var(--line)
+		}
+
+		.btn-ghost:active {
+			box-shadow: 0 1px 0 var(--line)
+		}
+
+		.panel {
+			background: var(--card);
+			border-radius: 24px;
+			border: 2px solid var(--line);
+			box-shadow: 0 5px 0 var(--line);
+			padding: 22px
+		}
+
+		/* ===== Slide 1 ===== */
+		.s1 {
+			background: #1B2330;
+			color: #fff;
+			padding-top: 0
+		}
+
+		.s1-grid {
+			height: 100%;
+			display: grid;
+			grid-template-columns: 1fr 470px;
+			gap: 30px;
+			align-items: center
+		}
+
+		.s1 h1 {
+			font-size: 64px;
+			line-height: 1.05
+		}
+
+		.s1 h1 .uz {
+			font-size: 34px;
+			margin-top: 12px
+		}
+
+		.s1-sub {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 34px;
+			color: #BFD0F5;
+			margin: 22px 0 22px
+		}
+
+		.s1-sub .uz {
+			font-size: 24px
+		}
+
+		.s1-live {
+			font-size: 21px;
+			font-weight: 700;
+			background: rgba(255, 255, 255, .1);
+			border-radius: 16px;
+			padding: 14px 20px;
+			margin-bottom: 28px;
+			line-height: 1.4;
+			max-width: 600px
+		}
+
+		.s1-live b {
+			color: #fff;
+			font-variant-numeric: tabular-nums;
+			background: rgba(255, 255, 255, .16);
+			padding: 0 8px;
+			border-radius: 8px
+		}
+
+		.s1-live .dotlive {
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: #6EA0FF;
+			margin-right: 10px;
+			animation: blink 1.2s infinite
+		}
+
+		@keyframes blink {
+			50% {
+				opacity: .25
+			}
+		}
+
+		.s1-clock {
+			position: relative;
+			height: 520px;
+			display: flex;
+			align-items: center;
+			justify-content: center
+		}
+
+		#clock {
+			width: 380px;
+			height: 380px
+		}
+
+		.pill {
+			position: absolute;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			background: #fff;
+			color: var(--ink);
+			padding: 10px 20px;
+			border-radius: 18px;
+			font-weight: 900;
+			font-size: 19px;
+			box-shadow: 0 5px 0 rgba(0, 0, 0, .25);
+			animation: bob 4.5s ease-in-out infinite
+		}
+
+		.pill i {
+			font-size: 20px;
+			color: var(--accent)
+		}
+
+		.pill .tr {
+			font-size: 14px
+		}
+
+		@keyframes bob {
+			50% {
+				transform: translateY(-10px)
+			}
+		}
+
+		/* ===== Slide 2 ===== */
+		.flips {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 18px
+		}
+
+		.flip {
+			perspective: 1100px;
+			height: 370px;
+			text-align: left;
+			display: block;
+			width: 100%
+		}
+
+		.flip-in {
+			position: relative;
+			display: block;
+			width: 100%;
+			height: 100%;
+			transition: transform .6s cubic-bezier(.3, .7, .3, 1);
+			transform-style: preserve-3d
+		}
+
+		.flip.on .flip-in {
+			transform: rotateY(180deg)
+		}
+
+		.face {
+			position: absolute;
+			inset: 0;
+			backface-visibility: hidden;
+			-webkit-backface-visibility: hidden;
+			border-radius: 24px;
+			padding: 24px;
+			display: flex;
+			flex-direction: column;
+			background: #fff;
+			border: 2px solid var(--line);
+			box-shadow: 0 6px 0 var(--line)
+		}
+
+		.face.back {
+			transform: rotateY(180deg);
+			background: var(--accent);
+			color: #fff;
+			border-color: var(--accent);
+			box-shadow: 0 6px 0 var(--accent-d)
+		}
+
+		.ico {
+			width: 64px;
+			height: 64px;
+			border-radius: 20px;
+			background: var(--accent-soft);
+			color: var(--accent);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 28px;
+			margin-bottom: 18px
+		}
+
+		.face h3 {
+			font-size: 28px;
+			margin-bottom: 10px
+		}
+
+		.face .desc {
+			font-size: 20px;
+			font-weight: 700;
+			line-height: 1.35;
+			color: var(--muted)
+		}
+
+		.face .hint {
+			margin-top: auto;
+			font-size: 16px;
+			font-weight: 800;
+			color: var(--accent);
+			display: flex;
+			gap: 8px;
+			align-items: center
+		}
+
+		.face .lbl {
+			font-size: 16px;
+			font-weight: 800;
+			opacity: .85;
+			margin-bottom: 14px
+		}
+
+		.face .ex {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 32px;
+			line-height: 1.25;
+			font-weight: 500
+		}
+
+		.face .ex .tr {
+			font-family: 'Nunito', sans-serif;
+			font-size: 19px;
+			margin-top: 14px
+		}
+
+		.face mark {
+			background: rgba(255, 255, 255, .24);
+			color: #fff;
+			border-radius: 8px;
+			padding: 0 6px
+		}
+
+		.tip {
+			margin-top: 18px;
+			text-align: center;
+			font-weight: 800;
+			color: var(--muted);
+			font-size: 18px
+		}
+
+		/* ===== Slide 3 ===== */
+		.s3-grid {
+			display: grid;
+			grid-template-columns: 1fr 390px;
+			gap: 20px
+		}
+
+		.tabs {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 18px
+		}
+
+		.tab {
+			flex: 1;
+			padding: 10px 8px;
+			border-radius: 14px;
+			font-weight: 900;
+			font-size: 19px;
+			background: #fff;
+			border: 2px solid var(--line);
+			box-shadow: 0 4px 0 var(--line);
+			display: flex;
+			gap: 10px;
+			align-items: center;
+			justify-content: center;
+			transition: .15s;
+			text-align: left
+		}
+
+		.tab:hover {
+			transform: translateY(-2px)
+		}
+
+		.tab.on {
+			background: var(--ink);
+			color: #fff;
+			border-color: var(--ink);
+			transform: translateY(2px);
+			box-shadow: 0 2px 0 #000
+		}
+
+		.formula {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			align-items: center;
+			min-height: 70px
+		}
+
+		.chip {
+			display: inline-flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 8px 18px;
+			border-radius: 14px;
+			font-weight: 900;
+			font-size: 24px;
+			color: #fff;
+			box-shadow: 0 4px 0 rgba(0, 0, 0, .2);
+			white-space: nowrap;
+			text-align: center
+		}
+
+		.chip .uz {
+			font-size: 14px;
+			margin-top: 0
+		}
+
+		.c-subj {
+			background: var(--ink)
+		}
+
+		.c-aux {
+			background: var(--accent)
+		}
+
+		.c-not {
+			background: var(--bad)
+		}
+
+		.c-ing {
+			background: #5B6B8A
+		}
+
+		.c-q {
+			background: var(--muted)
+		}
+
+		.plus {
+			font-size: 24px;
+			font-weight: 900;
+			color: var(--muted)
+		}
+
+		.who {
+			display: flex;
+			gap: 8px;
+			margin: 14px 0 4px;
+			flex-wrap: wrap
+		}
+
+		.who span {
+			padding: 5px 12px;
+			border-radius: 10px;
+			background: #EEF1F6;
+			font-weight: 800;
+			font-size: 16px;
+			color: var(--muted);
+			border: 2px solid transparent;
+			transition: .2s
+		}
+
+		.who span.cur {
+			background: var(--accent-soft);
+			color: var(--accent-d);
+			border-color: var(--accent)
+		}
+
+		.live {
+			margin-top: 14px;
+			background: var(--bg);
+			border-radius: 18px;
+			padding: 16px 20px
+		}
+
+		.live-label {
+			font-weight: 800;
+			color: var(--muted);
+			font-size: 16px;
+			margin-bottom: 10px
+		}
+
+		.live-sentence {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+			flex-wrap: wrap;
+			min-height: 50px
+		}
+
+		.live-sentence .p {
+			font-size: 32px;
+			font-weight: 900;
+			color: var(--muted)
+		}
+
+		.live-short {
+			margin-top: 10px;
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--muted)
+		}
+
+		.live-short b {
+			color: var(--ink)
+		}
+
+		.pick h4 {
+			font-size: 22px;
+			margin-bottom: 10px
+		}
+
+		.pick .row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-bottom: 16px
+		}
+
+		.opt {
+			display: inline-flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 6px 14px;
+			border-radius: 12px;
+			border: 2px solid var(--line);
+			box-shadow: 0 3px 0 var(--line);
+			background: #fff;
+			font-weight: 800;
+			font-size: 19px;
+			transition: .15s
+		}
+
+		.opt .tr {
+			font-size: 13px;
+			margin-top: 0
+		}
+
+		.opt:hover {
+			border-color: var(--accent)
+		}
+
+		.opt.on {
+			background: var(--accent);
+			border-color: var(--accent);
+			color: #fff;
+			box-shadow: 0 3px 0 var(--accent-d)
+		}
+
+		/* ===== Slide 4 ===== */
+		.rules {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 16px
+		}
+
+		.rule {
+			background: #fff;
+			border-radius: 22px;
+			border: 2px solid var(--line);
+			box-shadow: 0 5px 0 var(--line);
+			overflow: hidden;
+			transition: transform .2s
+		}
+
+		.rule:hover {
+			transform: translateY(-4px)
+		}
+
+		.rule-top {
+			padding: 12px 18px;
+			background: var(--ink);
+			color: #fff
+		}
+
+		.rule-top .n {
+			font-size: 15px;
+			font-weight: 800
+		}
+
+		.rule-top h3 {
+			font-size: 24px;
+			margin-top: 2px
+		}
+
+		.rule-top h3 .uz {
+			font-size: 16px;
+			font-family: 'Nunito', sans-serif
+		}
+
+		.rule-body {
+			padding: 14px 18px 18px
+		}
+
+		.rule-body p {
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--muted);
+			line-height: 1.3;
+			min-height: 84px
+		}
+
+		.ex-row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-family: 'Fredoka', sans-serif;
+			font-size: 26px;
+			margin-top: 10px;
+			background: var(--bg);
+			border-radius: 12px;
+			padding: 8px 12px
+		}
+
+		.ex-row .arrow {
+			color: var(--muted);
+			font-size: 16px
+		}
+
+		.ex-row s {
+			color: var(--bad);
+			text-decoration-thickness: 3px
+		}
+
+		.ex-row b {
+			font-weight: 600;
+			color: var(--accent)
+		}
+
+		.try {
+			margin-top: 16px;
+			background: #fff;
+			border-radius: 20px;
+			border: 2px solid var(--line);
+			box-shadow: 0 5px 0 var(--line);
+			padding: 12px 22px;
+			display: flex;
+			align-items: center;
+			gap: 18px
+		}
+
+		.try label {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 22px;
+			white-space: nowrap
+		}
+
+		.try input {
+			width: 210px;
+			padding: 10px 14px;
+			border-radius: 12px;
+			border: 3px solid var(--line);
+			font-size: 22px;
+			font-weight: 800;
+			color: var(--ink)
+		}
+
+		.try input:focus {
+			outline: none;
+			border-color: var(--accent)
+		}
+
+		.try-out {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--muted)
+		}
+
+		.try-out .big {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 30px;
+			color: var(--ink);
+			white-space: nowrap
+		}
+
+		.try-out .big em {
+			font-style: normal;
+			color: var(--accent)
+		}
+
+		/* ===== Slide 5 ===== */
+		.s5-grid {
+			display: grid;
+			grid-template-columns: 1fr 420px;
+			gap: 22px
+		}
+
+		.cloud {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 14px;
+			align-content: center;
+			justify-content: center;
+			padding: 24px;
+			min-height: 440px
+		}
+
+		.tag {
+			display: inline-flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 10px 24px;
+			border-radius: 18px;
+			background: #fff;
+			border: 2px solid var(--line);
+			box-shadow: 0 4px 0 var(--line);
+			font-family: 'Fredoka', sans-serif;
+			font-size: 28px;
+			transition: .15s
+		}
+
+		.tag .tr {
+			font-family: 'Nunito', sans-serif;
+			font-size: 14px;
+			margin-top: 0
+		}
+
+		.tag:hover {
+			border-color: var(--accent);
+			transform: translateY(-3px)
+		}
+
+		.tag.sel {
+			background: var(--accent);
+			color: #fff;
+			border-color: var(--accent);
+			box-shadow: 0 4px 0 var(--accent-d)
+		}
+
+		.bubble {
+			background: var(--ink);
+			color: #fff;
+			border-radius: 24px;
+			padding: 28px;
+			display: flex;
+			flex-direction: column
+		}
+
+		.bubble .k {
+			font-size: 16px;
+			font-weight: 800;
+			opacity: .7;
+			margin-top: 18px
+		}
+
+		.bubble .word {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 38px;
+			color: #BFD0F5
+		}
+
+		.bubble .word .tr {
+			font-family: 'Nunito', sans-serif;
+			font-size: 20px
+		}
+
+		.bubble .sent {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 30px;
+			line-height: 1.3;
+			font-weight: 500;
+			margin-top: 8px
+		}
+
+		.bubble .sent .tr {
+			font-family: 'Nunito', sans-serif;
+			font-size: 19px;
+			margin-top: 10px
+		}
+
+		.bubble mark {
+			background: var(--accent);
+			color: #fff;
+			border-radius: 8px;
+			padding: 0 6px
+		}
+
+		/* ===== Slide 6 ===== */
+		.s6-top {
+			display: grid;
+			grid-template-columns: 350px 1fr;
+			gap: 20px
+		}
+
+		.vcard {
+			border-radius: 22px;
+			padding: 18px 22px;
+			border: 2px solid var(--line);
+			background: #fff;
+			box-shadow: 0 5px 0 var(--line)
+		}
+
+		.vcard h3 {
+			font-size: 25px;
+			display: flex;
+			gap: 10px;
+			align-items: flex-start;
+			margin-bottom: 4px
+		}
+
+		.vcard h3 i {
+			margin-top: 3px
+		}
+
+		.vcard.dyn h3 i {
+			color: var(--ok)
+		}
+
+		.vcard.sta h3 i {
+			color: var(--bad)
+		}
+
+		.vcard .sub {
+			font-size: 16px;
+			font-weight: 700;
+			color: var(--muted);
+			margin-bottom: 12px
+		}
+
+		.vchips {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px
+		}
+
+		.vchip {
+			display: inline-flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 6px 14px;
+			border-radius: 12px;
+			font-weight: 900;
+			font-size: 19px;
+			background: #EEF1F6
+		}
+
+		.vchip .tr {
+			font-size: 13px;
+			margin-top: 0
+		}
+
+		.vchip.s {
+			background: #fff;
+			border: 2px solid var(--line);
+			box-shadow: 0 3px 0 var(--line);
+			transition: .15s
+		}
+
+		.vchip.s:hover {
+			border-color: var(--accent)
+		}
+
+		.vchip.s.sel {
+			background: var(--accent);
+			border-color: var(--accent);
+			color: #fff;
+			box-shadow: 0 3px 0 var(--accent-d)
+		}
+
+		.cmp {
+			margin-top: 18px;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 18px
+		}
+
+		.cbox {
+			border-radius: 20px;
+			padding: 16px 22px;
+			display: flex;
+			gap: 16px;
+			align-items: center;
+			font-family: 'Fredoka', sans-serif;
+			font-size: 30px;
+			line-height: 1.2;
+			min-height: 104px
+		}
+
+		.cbox i {
+			font-size: 34px
+		}
+
+		.cbox .tr {
+			font-family: 'Nunito', sans-serif;
+			font-size: 19px;
+			margin-top: 6px
+		}
+
+		.cbox.bad {
+			background: var(--bad-soft);
+			color: var(--bad)
+		}
+
+		.cbox.bad span.s {
+			text-decoration: line-through;
+			text-decoration-thickness: 3px
+		}
+
+		.cbox.good {
+			background: var(--ok-soft);
+			color: var(--ok)
+		}
+
+		.cmp-note {
+			margin-top: 14px;
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--muted);
+			text-align: center
+		}
+
+		/* ===== Slide 7 ===== */
+		.score {
+			background: #fff;
+			border: 2px solid var(--line);
+			box-shadow: 0 4px 0 var(--line);
+			border-radius: 16px;
+			padding: 8px 20px;
+			font-weight: 900;
+			font-size: 22px;
+			display: flex;
+			gap: 12px;
+			align-items: center
+		}
+
+		.score i {
+			color: var(--accent)
+		}
+
+		.s7 .head {
+			margin-bottom: 14px
+		}
+
+		.qgrid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 14px
+		}
+
+		.qcard {
+			background: #fff;
+			border-radius: 22px;
+			border: 2px solid var(--line);
+			box-shadow: 0 5px 0 var(--line);
+			padding: 14px 20px
+		}
+
+		.qtext {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 25px;
+			line-height: 1.25;
+			min-height: 76px
+		}
+
+		.qtext .tr {
+			font-family: 'Nunito', sans-serif;
+			font-size: 16px
+		}
+
+		.blank {
+			display: inline-block;
+			min-width: 100px;
+			text-align: center;
+			border-bottom: 4px solid var(--muted);
+			color: var(--muted);
+			padding: 0 6px
+		}
+
+		.blank.ok {
+			border-color: var(--ok);
+			color: var(--ok)
+		}
+
+		.qopts {
+			display: flex;
+			gap: 10px;
+			margin-top: 6px
+		}
+
+		.qo {
+			flex: 1;
+			padding: 9px 6px;
+			border-radius: 12px;
+			border: 2px solid var(--line);
+			box-shadow: 0 4px 0 var(--line);
+			font-weight: 900;
+			font-size: 18px;
+			background: #fff;
+			transition: .15s
+		}
+
+		.qo:hover:not(:disabled) {
+			border-color: var(--accent);
+			transform: translateY(-2px)
+		}
+
+		.qo:disabled {
+			cursor: default
+		}
+
+		.qo.right {
+			background: var(--ok);
+			border-color: var(--ok);
+			color: #fff;
+			box-shadow: 0 4px 0 #14562F
+		}
+
+		.qo.wrong {
+			background: var(--bad);
+			border-color: var(--bad);
+			color: #fff;
+			box-shadow: 0 4px 0 #84241C
+		}
+
+		.qfb {
+			margin-top: 10px;
+			min-height: 62px;
+			font-size: 16px;
+			font-weight: 700;
+			line-height: 1.3;
+			color: var(--muted)
+		}
+
+		.qfb .y {
+			color: var(--ok)
+		}
+
+		.qfb .n {
+			color: var(--bad)
+		}
+
+		.qfb .tr {
+			font-size: 15px
+		}
+
+		.qres {
+			display: none;
+			margin-top: 12px;
+			align-items: center;
+			justify-content: space-between;
+			background: var(--ink);
+			color: #fff;
+			border-radius: 16px;
+			padding: 6px 8px 6px 20px;
+			font-size: 18px;
+			font-weight: 800
+		}
+
+		.qres.show {
+			display: flex
+		}
+
+		.qres .btn {
+			padding: 6px 18px;
+			font-size: 17px
+		}
+
+		/* ===== Slide 8 ===== */
+		.checks {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 14px
+		}
+
+		.check {
+			display: flex;
+			gap: 16px;
+			align-items: center;
+			text-align: left;
+			background: #fff;
+			border: 2px solid var(--line);
+			box-shadow: 0 5px 0 var(--line);
+			border-radius: 20px;
+			padding: 14px 20px;
+			font-size: 20px;
+			font-weight: 700;
+			line-height: 1.3;
+			transition: .2s;
+			min-height: 96px
+		}
+
+		.check:hover {
+			transform: translateY(-3px)
+		}
+
+		.check .box {
+			flex: none;
+			width: 42px;
+			height: 42px;
+			border-radius: 12px;
+			border: 3px solid var(--line);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: transparent;
+			font-size: 20px;
+			transition: .2s
+		}
+
+		.check.on {
+			background: var(--accent-soft);
+			border-color: var(--accent)
+		}
+
+		.check.on .box {
+			background: var(--accent);
+			border-color: var(--accent);
+			color: #fff
+		}
+
+		.check b {
+			color: var(--accent-d)
+		}
+
+		.recap-bar {
+			margin-top: 18px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 20px
+		}
+
+		.recap-msg {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 26px
+		}
+
+		/* ===== Slide 9: game ===== */
+		.s9 .head {
+			margin-bottom: 14px
+		}
+
+		.game {
+			display: grid;
+			grid-template-columns: 290px 1fr;
+			gap: 18px;
+			height: 490px
+		}
+
+		.g-left {
+			background: var(--ink);
+			color: #fff;
+			border-radius: 24px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			padding: 20px
+		}
+
+		.g-ico {
+			width: 150px;
+			height: 150px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, .1);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 66px;
+			margin-bottom: 18px
+		}
+
+		.g-cap {
+			font-size: 20px;
+			font-weight: 800
+		}
+
+		.g-right {
+			background: #fff;
+			border: 2px solid var(--line);
+			box-shadow: 0 5px 0 var(--line);
+			border-radius: 24px;
+			padding: 22px 26px;
+			display: flex;
+			flex-direction: column
+		}
+
+		.gq {
+			font-size: 27px;
+			margin-bottom: 6px
+		}
+
+		.gq .uz {
+			font-family: 'Nunito', sans-serif;
+			font-size: 17px
+		}
+
+		.gopts {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			margin-top: 12px
+		}
+
+		.gopt {
+			text-align: left;
+			padding: 14px 20px;
+			border-radius: 14px;
+			border: 2px solid var(--line);
+			box-shadow: 0 4px 0 var(--line);
+			font-size: 24px;
+			font-weight: 800;
+			background: #fff;
+			transition: .15s
+		}
+
+		.gopt:hover:not(:disabled) {
+			border-color: var(--accent);
+			transform: translateY(-2px)
+		}
+
+		.gopt:disabled {
+			cursor: default
+		}
+
+		.gopt.right {
+			background: var(--ok);
+			border-color: var(--ok);
+			color: #fff;
+			box-shadow: 0 4px 0 #14562F
+		}
+
+		.gopt.wrong {
+			background: var(--bad);
+			border-color: var(--bad);
+			color: #fff;
+			box-shadow: 0 4px 0 #84241C
+		}
+
+		.hintline {
+			font-size: 20px;
+			font-weight: 800;
+			color: var(--accent-d);
+			margin: 6px 0 12px
+		}
+
+		.slots {
+			min-height: 78px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			align-items: center;
+			padding: 10px 16px;
+			border-radius: 16px;
+			background: var(--bg);
+			border: 2px dashed #B9C2D3
+		}
+
+		.slots .ph {
+			color: var(--muted);
+			font-weight: 700;
+			font-size: 18px
+		}
+
+		.slots .punct {
+			font-family: 'Fredoka', sans-serif;
+			font-size: 30px;
+			color: var(--muted)
+		}
+
+		.tiles {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin-top: 16px;
+			min-height: 60px
+		}
+
+		.tile {
+			padding: 8px 20px;
+			border-radius: 12px;
+			background: #fff;
+			border: 2px solid var(--line);
+			box-shadow: 0 4px 0 var(--line);
+			font-family: 'Fredoka', sans-serif;
+			font-size: 28px;
+			font-weight: 500;
+			transition: .15s
+		}
+
+		.tile:hover:not(:disabled) {
+			border-color: var(--accent);
+			transform: translateY(-2px)
+		}
+
+		.slots .tile {
+			background: var(--accent-soft);
+			border-color: var(--accent)
+		}
+
+		.tile:disabled {
+			cursor: default
+		}
+
+		.gfoot {
+			margin-top: auto;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			min-height: 72px
+		}
+
+		.gfb {
+			font-size: 20px;
+			font-weight: 800;
+			line-height: 1.3
+		}
+
+		.gfb.ok {
+			color: var(--ok)
+		}
+
+		.gfb.no {
+			color: var(--bad)
+		}
+
+		.gfb .tr {
+			font-size: 16px
+		}
+
+		.gbtns {
+			display: flex;
+			gap: 10px;
+			flex: none
+		}
+
+		.gend {
+			margin: auto;
+			text-align: center
+		}
+
+		.stars {
+			font-size: 54px;
+			color: #CBD3E1;
+			margin-bottom: 10px
+		}
+
+		.stars i.on {
+			color: var(--accent)
+		}
+
+		.gend h3 {
+			font-size: 36px;
+			margin-bottom: 8px
+		}
+
+		.gend p {
+			font-size: 21px;
+			font-weight: 700;
+			color: var(--muted);
+			margin-bottom: 22px
+		}
+
+		.gend .gbtns {
+			justify-content: center
+		}
+
+		/* ===== Navigation ===== */
+		#nav {
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			height: 64px;
+			background: #fff;
+			border-top: 2px solid var(--line);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 22px;
+			z-index: 50
+		}
+
+		#nav .btn {
+			padding: 5px 20px;
+			font-size: 17px;
+			border-radius: 14px;
+			line-height: 1.1
+		}
+
+		#nav .btn .uz {
+			font-size: 12px
+		}
+
+		.navL {
+			display: flex;
+			align-items: center;
+			gap: 16px
+		}
+
+		.lang {
+			display: flex;
+			background: #EEF1F6;
+			border-radius: 12px;
+			padding: 3px
+		}
+
+		.lang button {
+			padding: 6px 14px;
+			border-radius: 9px;
+			font-weight: 900;
+			font-size: 15px;
+			color: var(--muted)
+		}
+
+		.lang button.on {
+			background: var(--ink);
+			color: #fff
+		}
+
+		.mid {
+			display: flex;
+			align-items: center;
+			gap: 18px
+		}
+
+		#counter {
+			font-weight: 900;
+			font-size: 17px;
+			min-width: 100px;
+			text-align: center;
+			line-height: 1.15
+		}
+
+		#counter .uz {
+			font-size: 12px
+		}
+
+		#dots {
+			display: flex;
+			gap: 8px
+		}
+
+		.dot {
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+			background: var(--line);
+			transition: .25s
+		}
+
+		.dot.on {
+			background: var(--accent);
+			width: 30px;
+			border-radius: 8px
+		}
+
+		.dot:hover {
+			background: #9AA7BF
+		}
+
+		@media (prefers-reduced-motion:reduce) {
+
+			*,
+			*::before,
+			*::after {
+				animation: none !important;
+				transition-duration: .01ms !important
+			}
+		}
+	</style>
+</head>
+
+<body data-lang="both">
+
+	<main id="stage" aria-label="Present Continuous presentation">
+		<div id="progress"></div>
+
+		<!-- 1. Title -->
+		<section class="slide s1" aria-label="Title">
+			<div class="s1-grid">
+				<div>
+					<h1><span class="en">Mastering Present Continuous Tense</span><span class="uz">Hozirgi davomli zamon (Present
+							Continuous)</span></h1>
+					<p class="s1-sub"><span class="en">What is happening RIGHT NOW?</span><span class="uz">Hozir nima
+							bo'layapti?</span></p>
+					<p class="s1-live"><span class="dotlive"></span><span class="en">It is <b class="digital">--:--:--</b> and you
+							are reading this slide.</span><span class="uz">Hozir soat <b class="digital">--:--:--</b>, siz esa bu
+							slaydni o'qiyapsiz.</span></p>
+					<button class="btn btn-light" id="startBtn"><span><span class="en">Start</span><span
+								class="uz">Boshlash</span></span><i class="fa-solid fa-play"></i></button>
+				</div>
+				<div class="s1-clock" aria-hidden="true">
+					<svg id="clock" viewBox="0 0 400 400">
+						<circle cx="200" cy="200" r="192" fill="#fff" stroke="#8FA9E8" stroke-width="12" />
+						<g id="ticks"></g>
+						<g id="nums"></g>
+						<line id="hH" x1="200" y1="200" x2="200" y2="125" stroke="#1B2330" stroke-width="14"
+							stroke-linecap="round" />
+						<line id="hM" x1="200" y1="200" x2="200" y2="75" stroke="#1B2330" stroke-width="9" stroke-linecap="round" />
+						<line id="hS" x1="200" y1="225" x2="200" y2="55" stroke="#2F5FD0" stroke-width="4" stroke-linecap="round" />
+						<circle cx="200" cy="200" r="12" fill="#2F5FD0" />
+					</svg>
+					<div class="pill" style="left:-30px;top:30px"><i class="fa-solid fa-book-open"></i><span>She is reading<span
+								class="tr">U o'qiyapti</span></span></div>
+					<div class="pill" style="right:-14px;top:112px;animation-delay:-1.2s"><i
+							class="fa-solid fa-person-running"></i><span>He is running<span class="tr">U yugurayapti</span></span>
+					</div>
+					<div class="pill" style="left:-40px;bottom:100px;animation-delay:-2.4s"><i
+							class="fa-solid fa-music"></i><span>They are singing<span class="tr">Ular qo'shiq aytyapti</span></span>
+					</div>
+					<div class="pill" style="right:0;bottom:24px;animation-delay:-3.4s"><i class="fa-solid fa-mug-hot"></i><span>I
+							am drinking tea<span class="tr">Men choy ichyapman</span></span></div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 2. When -->
+		<section class="slide s2" aria-label="When to use it">
+			<header class="head">
+				<h2><span class="en">When do we use it?</span><span class="uz">Qachon ishlatamiz?</span></h2>
+			</header>
+			<div class="flips" id="flips"></div>
+			<p class="tip"><i class="fa-solid fa-hand-pointer"></i> <span class="en">Click a card to flip it</span><span
+					class="uz">Kartani bosib aylantiring</span></p>
+		</section>
+
+		<!-- 3. Structure -->
+		<section class="slide s3" aria-label="Sentence structure">
+			<header class="head">
+				<h2><span class="en">Easy formula</span><span class="uz">Oddiy formula</span></h2>
+			</header>
+			<div class="s3-grid">
+				<div class="panel">
+					<div class="tabs" role="tablist">
+						<button class="tab on" data-f="aff" role="tab"><i class="fa-solid fa-circle-check"></i><span><span
+									class="en">Yes</span><span class="uz">Tasdiq</span></span></button>
+						<button class="tab" data-f="neg" role="tab"><i class="fa-solid fa-circle-xmark"></i><span><span
+									class="en">No</span><span class="uz">Inkor</span></span></button>
+						<button class="tab" data-f="int" role="tab"><i class="fa-solid fa-circle-question"></i><span><span
+									class="en">Question</span><span class="uz">Savol</span></span></button>
+					</div>
+					<div class="formula" id="formula"></div>
+					<div class="who" id="who"><span data-a="am">I → am</span><span data-a="is">he / she / it → is</span><span
+							data-a="are">you / we / they → are</span></div>
+					<div class="live">
+						<div class="live-label"><span class="en">Your sentence</span><span class="uz">Sizning gapingiz</span></div>
+						<div class="live-sentence" id="liveSentence" aria-live="polite"></div>
+						<div class="live-short" id="liveShort"></div>
+					</div>
+				</div>
+				<div class="panel pick">
+					<h4><span class="en">Subject</span><span class="uz">Ega (kim?)</span></h4>
+					<div class="row" id="subjPick"></div>
+					<h4><span class="en">Verb</span><span class="uz">Fe'l</span></h4>
+					<div class="row" id="verbPick"></div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 4. Spelling -->
+		<section class="slide s4" aria-label="Spelling rules">
+			<header class="head">
+				<h2><span class="en">Add -ing to the verb</span><span class="uz">Fe'lga -ing qo'shamiz</span></h2>
+			</header>
+			<div class="rules" id="rules"></div>
+			<div class="try">
+				<label for="tryIn"><span class="en">Try a verb</span><span class="uz">Fe'l sinab ko'ring</span></label>
+				<input id="tryIn" type="text" placeholder="stop, make, tie…" autocomplete="off" spellcheck="false"
+					maxlength="16">
+				<div class="try-out" id="tryOut"></div>
+			</div>
+		</section>
+
+		<!-- 5. Signal words -->
+		<section class="slide s5" aria-label="Signal words">
+			<header class="head">
+				<h2><span class="en">Time words</span><span class="uz">Vaqt so'zlari</span></h2>
+			</header>
+			<div class="s5-grid">
+				<div class="panel cloud" id="cloud"></div>
+				<div class="bubble" id="bubble" aria-live="polite"></div>
+			</div>
+		</section>
+
+		<!-- 6. Stative -->
+		<section class="slide s6" aria-label="State verbs">
+			<header class="head">
+				<h2><span class="en">Some verbs do NOT use -ing</span><span class="uz">Ba'zi fe'llar -ing olmaydi</span></h2>
+			</header>
+			<div class="s6-top">
+				<div class="vcard dyn">
+					<h3><i class="fa-solid fa-circle-check"></i><span><span class="en">Action verbs</span><span class="uz">Harakat
+								fe'llari</span></span></h3>
+					<p class="sub"><span class="en">You can see the action. -ing is OK.</span><span class="uz">Harakatni ko'rish
+							mumkin. -ing bo'ladi.</span></p>
+					<div class="vchips">
+						<span class="vchip">run<span class="tr">yugurmoq</span></span><span class="vchip">eat<span
+								class="tr">yemoq</span></span><span class="vchip">write<span class="tr">yozmoq</span></span>
+						<span class="vchip">play<span class="tr">o'ynamoq</span></span><span class="vchip">swim<span
+								class="tr">suzmoq</span></span><span class="vchip">cook<span class="tr">pishirmoq</span></span>
+					</div>
+				</div>
+				<div class="vcard sta">
+					<h3><i class="fa-solid fa-circle-xmark"></i><span><span class="en">State verbs</span><span class="uz">Holat
+								fe'llari</span></span></h3>
+					<p class="sub"><span class="en">Feelings, thoughts, having. Click one!</span><span class="uz">His, fikr,
+							egalik. Birini bosing!</span></p>
+					<div class="vchips" id="staChips"></div>
+				</div>
+			</div>
+			<div class="cmp">
+				<div class="cbox bad"><i class="fa-solid fa-circle-xmark"></i><span class="s" id="badS"></span></div>
+				<div class="cbox good"><i class="fa-solid fa-circle-check"></i><span id="goodS"></span></div>
+			</div>
+			<p class="cmp-note" id="cmpNote"></p>
+		</section>
+
+		<!-- 7. Quiz -->
+		<section class="slide s7" aria-label="Mini quiz">
+			<header class="head">
+				<h2><span class="en">Mini-quiz</span><span class="uz">Mini-test</span></h2>
+				<div class="score"><i class="fa-solid fa-star"></i><span id="score">0 / 4</span></div>
+			</header>
+			<div class="qgrid" id="qgrid"></div>
+			<div class="qres" id="qres"><span id="qresMsg"></span><button class="btn" id="qretry"><i
+						class="fa-solid fa-rotate-left"></i><span><span class="en">Try again</span><span class="uz">Qayta
+							urinish</span></span></button></div>
+		</section>
+
+		<!-- 8. Recap -->
+		<section class="slide s8" aria-label="Summary">
+			<header class="head">
+				<h2><span class="en">Quick recap</span><span class="uz">Qisqa takrorlash</span></h2>
+			</header>
+			<div class="checks" id="checks"></div>
+			<div class="recap-bar">
+				<div class="recap-msg" id="recapMsg"></div>
+				<button class="btn" id="toGame"><span><span class="en">Play the game</span><span class="uz">O'yinni
+							boshlash</span></span><i class="fa-solid fa-gamepad"></i></button>
+			</div>
+		</section>
+
+		<!-- 9. Game -->
+		<section class="slide s9" aria-label="Game">
+			<header class="head">
+				<h2><span class="en">Game time!</span><span class="uz">O'yin vaqti!</span></h2>
+				<div class="score"><span id="gRound">1 / 8</span><i class="fa-solid fa-star"></i><span id="gScore">0</span>
+				</div>
+			</header>
+			<div class="game">
+				<div class="g-left">
+					<div class="g-ico" id="gIco"></div>
+					<div class="g-cap"><span class="en">Look at the picture</span><span class="uz">Rasmga qarang</span></div>
+				</div>
+				<div class="g-right" id="gMain"></div>
+			</div>
+		</section>
+
+		<nav id="nav" aria-label="Slide controls">
+			<div class="navL">
+				<button class="btn btn-ghost" id="prev"><i class="fa-solid fa-chevron-left"></i><span><span
+							class="en">Back</span><span class="uz">Orqaga</span></span></button>
+				<div class="lang" role="group" aria-label="Language">
+					<button data-l="both" class="on">UZ + EN</button><button data-l="en">EN</button><button
+						data-l="uz">UZ</button>
+				</div>
+			</div>
+			<div class="mid">
+				<div id="dots"></div>
+				<div id="counter" aria-live="polite"></div>
+			</div>
+			<button class="btn" id="next"><span><span class="en">Next</span><span class="uz">Keyingi</span></span><i
+					class="fa-solid fa-chevron-right"></i></button>
+		</nav>
+	</main>
+
+	<script>
+		const $ = (s, r = document) => r.querySelector(s)
+		const $$ = (s, r = document) => [...r.querySelectorAll(s)]
+		const cap = s => s.charAt(0).toUpperCase() + s.slice(1)
+		const T = (en, uz) => `<span class="en">${en}</span><span class="uz">${uz}</span>`   // explanation in both languages
+		const TR = (en, uz) => `${en}<span class="tr">${uz}</span>`                          // English example + Uzbek translation
+		const shuffle = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[b[i], b[j]] = [b[j], b[i]] } return b }
+
+		/* ============ -ing spelling helper ============ */
+		const STRESSED = ['begin', 'forget', 'admit', 'prefer', 'regret', 'occur', 'refer', 'permit', 'control', 'submit', 'commit', 'upset']
+		const RULE_TXT = {
+			1: T('Normal verb: just add -ing', "Oddiy fe'l: shunchaki -ing qo'shing"),
+			2: T('Ends with -e: remove e, add -ing', "-e bilan tugaydi: e ni o'chiring, -ing qo'shing"),
+			3: T('Short verb: double the last letter', "Qisqa fe'l: oxirgi harfni ikkilantiring"),
+			4: T('Ends with -ie: change ie to y', "-ie bilan tugaydi: ie ni y ga almashtiring")
+		}
+		function toIng(raw) {
+			const v = raw.trim().toLowerCase()
+			if (!/^[a-z]+$/.test(v)) return null
+			if (v === 'be') return { w: 'being', r: 1 }
+			if (/ie$/.test(v)) return { w: v.slice(0, -2) + 'ying', r: 4 }
+			if (v.endsWith('e') && !/(ee|ye|oe)$/.test(v)) return { w: v.slice(0, -1) + 'ing', r: 2 }
+			if (STRESSED.includes(v) || /^[^aeiou]*[aeiou][^aeiouwxy]$/.test(v) || /^[^aeiou]*qu[aeiou][^aeiouwxy]$/.test(v))
+				return { w: v + v.slice(-1) + 'ing', r: 3 }
+			return { w: v + 'ing', r: 1 }
+		}
+
+		/* ============ Navigation & language ============ */
+		const stage = $('#stage'), slides = $$('.slide'), total = slides.length
+		let cur = 0
+		$('#dots').innerHTML = slides.map((_, i) => `<button class="dot" aria-label="Slide ${i + 1}" data-i="${i}"></button>`).join('')
+		$$('.dot').forEach(d => d.addEventListener('click', () => go(+d.dataset.i)))
+		function go(n) {
+			cur = Math.max(0, Math.min(total - 1, n))
+			slides.forEach((s, i) => { s.classList.toggle('active', i === cur); s.classList.toggle('past', i < cur); s.setAttribute('aria-hidden', i !== cur) })
+			$('#progress').style.width = ((cur + 1) / total * 100) + '%'
+			$('#counter').innerHTML = T(`Slide ${cur + 1} of ${total}`, `${cur + 1} / ${total}-slayd`)
+			$$('.dot').forEach((d, i) => d.classList.toggle('on', i === cur))
+			$('#prev').disabled = cur === 0; $('#next').disabled = cur === total - 1
+		}
+		$('#prev').addEventListener('click', () => go(cur - 1))
+		$('#next').addEventListener('click', () => go(cur + 1))
+		$('#startBtn').addEventListener('click', () => go(1))
+		$('#toGame').addEventListener('click', () => go(8))
+		$$('.lang button').forEach(b => b.addEventListener('click', () => {
+			document.body.dataset.lang = b.dataset.l
+			$$('.lang button').forEach(x => x.classList.toggle('on', x === b))
+		}))
+		document.addEventListener('keydown', e => {
+			if (e.target.tagName === 'INPUT') return
+			if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1) }
+			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1) }
+			else if (e.key === 'Home') go(0); else if (e.key === 'End') go(total - 1)
+		})
+		function fit() { const s = Math.min(innerWidth / 1280, innerHeight / 720) * 0.97; stage.style.transform = `translate(-50%,-50%) scale(${s})` }
+		addEventListener('resize', fit); fit();
+
+		/* ============ Slide 1: clock ============ */
+		(function () {
+			const NS = 'http://www.w3.org/2000/svg', ticks = $('#ticks'), nums = $('#nums')
+			for (let i = 0; i < 60; i++) {
+				const major = i % 5 === 0, a = i * 6 * Math.PI / 180, r1 = major ? 158 : 170, r2 = 180, l = document.createElementNS(NS, 'line')
+				l.setAttribute('x1', 200 + r1 * Math.sin(a)); l.setAttribute('y1', 200 - r1 * Math.cos(a))
+				l.setAttribute('x2', 200 + r2 * Math.sin(a)); l.setAttribute('y2', 200 - r2 * Math.cos(a))
+				l.setAttribute('stroke', major ? '#1B2330' : '#C3CBDA'); l.setAttribute('stroke-width', major ? 5 : 2); l.setAttribute('stroke-linecap', 'round')
+				ticks.appendChild(l)
+			}
+			for (let i = 1; i <= 12; i++) {
+				const a = i * 30 * Math.PI / 180, t = document.createElementNS(NS, 'text')
+				t.setAttribute('x', 200 + 132 * Math.sin(a)); t.setAttribute('y', 200 - 132 * Math.cos(a))
+				t.setAttribute('text-anchor', 'middle'); t.setAttribute('dominant-baseline', 'central')
+				t.setAttribute('font-size', 30); t.setAttribute('font-weight', 600); t.setAttribute('font-family', 'Fredoka, Nunito, sans-serif'); t.setAttribute('fill', '#1B2330')
+				t.textContent = i; nums.appendChild(t)
+			}
+			function tick() {
+				const d = new Date(), s = d.getSeconds(), m = d.getMinutes(), h = d.getHours() % 12
+				$('#hS').setAttribute('transform', `rotate(${s * 6} 200 200)`)
+				$('#hM').setAttribute('transform', `rotate(${m * 6 + s * .1} 200 200)`)
+				$('#hH').setAttribute('transform', `rotate(${h * 30 + m * .5} 200 200)`)
+				const txt = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+				$$('.digital').forEach(e => e.textContent = txt)
+			}
+			tick(); setInterval(tick, 1000)
+		})()
+
+		/* ============ Slide 2: flip cards ============ */
+		const uses = [
+			{ i: 'fa-bolt', t: T('Right now', 'Hozir'), d: T('Something is happening at this moment.', 'Aynan hozir nimadir bo\'layapti.'), ex: TR('She <mark>is drinking</mark> coffee.', 'U qahva ichyapti.') },
+			{ i: 'fa-suitcase-rolling', t: T('Short time', 'Qisqa vaqt'), d: T('True now, but not forever.', 'Hozir shunday, lekin doim emas.'), ex: TR('I <mark>am staying</mark> in London this week.', 'Men bu hafta Londonda turibman.') },
+			{ i: 'fa-arrow-trend-up', t: T('Change', 'O\'zgarish'), d: T('Something is becoming different.', 'Biror narsa o\'zgarib borayapti.'), ex: TR('English <mark>is getting</mark> easier.', 'Ingliz tili osonlashib bormoqda.') },
+			{ i: 'fa-calendar-check', t: T('Plan', 'Reja'), d: T('A fixed plan for the future.', 'Kelajak uchun aniq reja.'), ex: TR('We <mark>are meeting</mark> tomorrow.', 'Biz ertaga uchrashamiz.') }
+		]
+		$('#flips').innerHTML = uses.map(u => `
+  <button class="flip" aria-pressed="false">
+    <span class="flip-in">
+      <span class="face"><span class="ico"><i class="fa-solid ${u.i}"></i></span><h3>${u.t}</h3><span class="desc">${u.d}</span>
+        <span class="hint"><i class="fa-solid fa-rotate"></i>${T('Example', 'Misol')}</span></span>
+      <span class="face back"><span class="lbl">${T('Example', 'Misol')}</span><span class="ex">${u.ex}</span></span>
+    </span>
+  </button>`).join('')
+		$$('.flip').forEach(f => f.addEventListener('click', () => f.setAttribute('aria-pressed', f.classList.toggle('on'))))
+
+		/* ============ Slide 3: builder ============ */
+		const SUBJ = [['I', 'men'], ['you', 'sen / siz'], ['he', "u (erkak)"], ['she', "u (ayol)"], ['it', "u (narsa)"], ['we', 'biz'], ['they', 'ular']]
+		const AUX = { I: 'am', you: 'are', he: 'is', she: 'is', it: 'is', we: 'are', they: 'are' }
+		const CONTR = { I: "I'm", you: "you're", he: "he's", she: "she's", it: "it's", we: "we're", they: "they're" }
+		const VERBS = [['read', "o'qimoq"], ['sleep', 'uxlamoq'], ['listen', 'tinglamoq'], ['run', 'yugurmoq'], ['write', 'yozmoq'], ['swim', 'suzmoq'], ['dance', 'raqsga tushmoq']]
+		const DEF = { aff: ['she', 'read'], neg: ['they', 'sleep'], int: ['you', 'listen'] }
+		let form = 'aff', subj = 'she', verb = 'read'
+		const chip = (c, t) => `<span class="chip ${c}">${t}</span>`
+		const plus = '<span class="plus">+</span>'
+		$('#subjPick').innerHTML = SUBJ.map(([s, u]) => `<button class="opt" data-s="${s}">${s}<span class="tr">${u}</span></button>`).join('')
+		$('#verbPick').innerHTML = VERBS.map(([v, u]) => `<button class="opt" data-v="${v}">${v}<span class="tr">${u}</span></button>`).join('')
+
+		function renderS3() {
+			const sj = chip('c-subj', T('Subject', 'Ega')), ax = chip('c-aux', T('am / is / are', 'yordamchi fe\'l')),
+				ng = chip('c-ing', T('Verb + ing', 'Fe\'l + ing')), nt = chip('c-not', T('not', 'emas'))
+			const F = {
+				aff: [sj, plus, ax, plus, ng],
+				neg: [sj, plus, ax, plus, nt, plus, ng],
+				int: [chip('c-aux', T('Am / Is / Are', 'Yordamchi fe\'l')), plus, sj, plus, ng, chip('c-q', '?')]
+			}
+			$('#formula').innerHTML = F[form].join('')
+			const aux = AUX[subj], ing = toIng(verb).w
+			let html, short
+			if (form === 'aff') {
+				html = chip('c-subj', cap(subj)) + chip('c-aux', aux) + chip('c-ing', ing) + '<span class="p">.</span>'
+				short = T(`Short form: <b>${cap(CONTR[subj])} ${ing}.</b>`, `Qisqa shakli: <b>${cap(CONTR[subj])} ${ing}.</b>`)
+			} else if (form === 'neg') {
+				html = chip('c-subj', cap(subj)) + chip('c-aux', aux) + chip('c-not', 'not') + chip('c-ing', ing) + '<span class="p">.</span>'
+				const sf = subj === 'I' ? `I'm not ${ing}.` : `${cap(subj)} ${aux === 'is' ? "isn't" : "aren't"} ${ing}.`
+				short = T(`Short form: <b>${sf}</b>`, `Qisqa shakli: <b>${sf}</b>`)
+			} else {
+				html = chip('c-aux', cap(aux)) + chip('c-subj', subj) + chip('c-ing', ing) + '<span class="p">?</span>'
+				short = T('In a question, <b>am / is / are</b> comes first.', 'Savolda <b>am / is / are</b> birinchi keladi.')
+			}
+			$('#liveSentence').innerHTML = html; $('#liveShort').innerHTML = short
+			$$('.tab').forEach(t => { const on = t.dataset.f === form; t.classList.toggle('on', on); t.setAttribute('aria-selected', on) })
+			$$('#subjPick .opt').forEach(b => b.classList.toggle('on', b.dataset.s === subj))
+			$$('#verbPick .opt').forEach(b => b.classList.toggle('on', b.dataset.v === verb))
+			$$('#who span').forEach(s => s.classList.toggle('cur', s.dataset.a === aux))
+		}
+		$$('.tab').forEach(t => t.addEventListener('click', () => { form = t.dataset.f;[subj, verb] = DEF[form]; renderS3() }))
+		$$('#subjPick .opt').forEach(b => b.addEventListener('click', () => { subj = b.dataset.s; renderS3() }))
+		$$('#verbPick .opt').forEach(b => b.addEventListener('click', () => { verb = b.dataset.v; renderS3() }))
+		renderS3()
+
+		/* ============ Slide 4: spelling ============ */
+		const RULES = [
+			{ n: T('Rule 1', '1-qoida'), t: T('Normal verbs', "Oddiy fe'llar"), d: T('Just add -ing.', "Shunchaki -ing qo'shing."), ex: [['play', 'play<b>ing</b>'], ['walk', 'walk<b>ing</b>']] },
+			{ n: T('Rule 2', '2-qoida'), t: T('Ends with -e', '-e bilan tugaydi'), d: T('Remove e, then add -ing.', "e ni o'chiring, so'ng -ing qo'shing."), ex: [['dance', 'danc<s>e</s><b>ing</b>'], ['write', 'writ<s>e</s><b>ing</b>']] },
+			{ n: T('Rule 3', '3-qoida'), t: T('Short verbs', "Qisqa fe'llar"), d: T('Consonant + vowel + consonant: double the last letter.', "Undosh + unli + undosh: oxirgi harfni ikkilantiring."), ex: [['run', 'run<b>n</b><b>ing</b>'], ['swim', 'swim<b>m</b><b>ing</b>']] },
+			{ n: T('Rule 4', '4-qoida'), t: T('Ends with -ie', '-ie bilan tugaydi'), d: T('Change ie to y, then add -ing.', "ie ni y ga almashtiring, so'ng -ing qo'shing."), ex: [['die', 'd<s>ie</s><b>ying</b>'], ['lie', 'l<s>ie</s><b>ying</b>']] }
+		]
+		$('#rules').innerHTML = RULES.map(r => `
+  <article class="rule">
+    <div class="rule-top"><div class="n">${r.n}</div><h3>${r.t}</h3></div>
+    <div class="rule-body"><p>${r.d}</p>
+      ${r.ex.map(e => `<div class="ex-row"><span>${e[0]}</span><span class="arrow"><i class="fa-solid fa-arrow-right"></i></span><span>${e[1]}</span></div>`).join('')}
+    </div>
+  </article>`).join('')
+		const tryDefault = `<span>${T('Type a verb to see the -ing form.', "Fe'l yozing, -ing shaklini ko'ring.")}</span>`
+		$('#tryOut').innerHTML = tryDefault
+		$('#tryIn').addEventListener('input', e => {
+			const v = e.target.value.trim(), out = $('#tryOut')
+			if (!v) { out.innerHTML = tryDefault; return }
+			const r = toIng(v)
+			if (!r) { out.innerHTML = `<span>${T('Use letters only, one verb.', "Faqat harf, bitta fe'l yozing.")}</span>`; return }
+			out.innerHTML = `<span class="big">${v.toLowerCase()} → <em>${r.w}</em></span><span>${RULE_TXT[r.r]}</span>`
+		})
+
+		/* ============ Slide 5: time words ============ */
+		const SIGNALS = [
+			{ w: 'Now', u: 'hozir', s: 'I <mark>am studying</mark> English now.', t: "Men hozir ingliz tilini o'rganyapman." },
+			{ w: 'Right now', u: 'aynan hozir', s: 'She <mark>is cooking</mark> dinner right now.', t: "U aynan hozir kechki ovqat tayyorlayapti." },
+			{ w: 'At the moment', u: 'shu payt', s: 'He <mark>is talking</mark> on the phone at the moment.', t: "U hozir telefonda gaplashyapti." },
+			{ w: 'Currently', u: 'hozirda', s: 'We <mark>are learning</mark> grammar currently.', t: "Biz hozirda grammatika o'rganyapmiz." },
+			{ w: 'Today', u: 'bugun', s: 'It <mark>is raining</mark> today.', t: "Bugun yomg'ir yog'yapti." },
+			{ w: 'Look!', u: 'Qara!', s: 'Look! The dog <mark>is jumping</mark>!', t: "Qara! It sakrayapti!" },
+			{ w: 'Listen!', u: 'Tingla!', s: 'Listen! Someone <mark>is singing</mark>.', t: "Tingla! Kimdir qo'shiq aytyapti." },
+			{ w: 'These days', u: "bu kunlarda", s: 'Prices <mark>are rising</mark> these days.', t: "Bu kunlarda narxlar ko'tarilyapti." }
+		]
+		$('#cloud').innerHTML = SIGNALS.map((s, i) => `<button class="tag" data-i="${i}">${s.w}<span class="tr">${s.u}</span></button>`).join('')
+		function showSignal(i) {
+			const s = SIGNALS[i]
+			$$('.tag').forEach((t, j) => t.classList.toggle('sel', j === i))
+			$('#bubble').innerHTML = `<div class="word">${TR(s.w, s.u)}</div><div class="k">${T('Example', 'Misol')}</div><div class="sent">${TR(s.s, s.t)}</div>`
+		}
+		$$('.tag').forEach(t => t.addEventListener('click', () => showSignal(+t.dataset.i)))
+		showSignal(1)
+
+		/* ============ Slide 6: state verbs ============ */
+		const STA = {
+			love: ["yaxshi ko'rmoq", 'I love this song.', 'I am loving this song.', "Men bu qo'shiqni yaxshi ko'raman."],
+			like: ['yoqtirmoq', 'She likes pizza.', 'She is liking pizza.', 'U pitsani yoqtiradi.'],
+			want: ['istamoq', 'I want ice cream.', 'I am wanting ice cream.', 'Men muzqaymoq istayman.'],
+			need: ['kerak bo\'lmoq', 'We need help.', 'We are needing help.', 'Bizga yordam kerak.'],
+			know: ['bilmoq', 'I know the answer.', 'I am knowing the answer.', 'Men javobni bilaman.'],
+			understand: ['tushunmoq', 'I understand you.', 'I am understanding you.', 'Men sizni tushunaman.'],
+			have: ['egalik: bor', 'I have a bike.', 'I am having a bike.', 'Mening velosipedim bor.']
+		}
+		$('#staChips').innerHTML = Object.entries(STA).map(([v, d]) => `<button class="vchip s" data-v="${v}">${v}<span class="tr">${d[0]}</span></button>`).join('')
+		function showSta(v) {
+			const d = STA[v]
+			$$('.vchip.s').forEach(c => c.classList.toggle('sel', c.dataset.v === v))
+			$('#badS').textContent = d[2]
+			$('#goodS').innerHTML = TR(d[1], d[3])
+			$('#cmpNote').innerHTML = v === 'have'
+				? T('Careful: <b>I am having lunch</b> is OK. There, have = eat.', 'Diqqat: <b>I am having lunch</b> to\'g\'ri. Bunda have = yemoq.')
+				: T(`Use the simple present with "${v}".`, `"${v}" bilan oddiy hozirgi zamonni ishlating.`)
+		}
+		$$('.vchip.s').forEach(c => c.addEventListener('click', () => showSta(c.dataset.v)))
+		showSta('want')
+
+		/* ============ Slide 7: quiz ============ */
+		const BL = '<span class="blank">&nbsp;&nbsp;&nbsp;</span>'
+		const QUIZ = [
+			{ q: `Look! The baby ${BL} in the garden.`, t: "Qara! Chaqaloq bog'da o'ynayapti.", o: ['plays', 'is playing', 'are playing'], a: 1, e: T('"Look!" = now. Use is + verb-ing.', '"Look!" = hozir. is + fe\'l-ing ishlating.') },
+			{ q: `They ${BL} football now.`, t: "Ular hozir futbol o'ynamayapti.", o: ["don't playing", "isn't playing", "aren't playing"], a: 2, e: T('They + are. No: aren\'t + verb-ing.', "They bilan are ishlatiladi. Inkor: aren't + fe'l-ing.") },
+			{ q: `${BL} you listening to me?`, t: 'Sen meni tinglayapsanmi?', o: ['Are', 'Do', 'Is'], a: 0, e: T('A question starts with am / is / are.', 'Savol am / is / are bilan boshlanadi.') },
+			{ q: `I ${BL} this song. It is my favourite!`, t: "Men bu qo'shiqni yaxshi ko'raman. U mening sevimlim!", o: ['am loving', 'loving', 'love'], a: 2, e: T('Love is a state verb. No -ing.', "Love holat fe'li. -ing kerak emas.") }
+		]
+		let qScore = 0, qDone = 0
+		function buildQuiz() {
+			qScore = 0; qDone = 0; $('#score').textContent = `0 / ${QUIZ.length}`; $('#qres').classList.remove('show')
+			$('#qgrid').innerHTML = QUIZ.map((q, i) => `
+    <div class="qcard" data-q="${i}">
+      <div class="qtext">${q.q}<span class="tr">${q.t}</span></div>
+      <div class="qopts">${q.o.map((o, j) => `<button class="qo" data-j="${j}">${o}</button>`).join('')}</div>
+      <div class="qfb" aria-live="polite"></div>
+    </div>`).join('')
+			$$('.qcard').forEach(card => {
+				const q = QUIZ[+card.dataset.q]
+				$$('.qo', card).forEach(btn => btn.addEventListener('click', () => {
+					const j = +btn.dataset.j, ok = j === q.a
+					$$('.qo', card).forEach(b => b.disabled = true)
+					btn.classList.add(ok ? 'right' : 'wrong')
+					if (!ok) $$('.qo', card)[q.a].classList.add('right')
+					const bl = $('.blank', card); bl.textContent = q.o[q.a]; bl.classList.add('ok')
+					$('.qfb', card).innerHTML = ok
+						? `<i class="fa-solid fa-circle-check y"></i> <b class="y">${T('Correct!', "To'g'ri!")}</b> ${q.e}`
+						: `<i class="fa-solid fa-circle-xmark n"></i> <b class="n">${T('Not quite.', "Unday emas.")}</b> ${q.e}`
+					if (ok) qScore++; qDone++
+					$('#score').textContent = `${qScore} / ${QUIZ.length}`
+					if (qDone === QUIZ.length) {
+						$('#qresMsg').innerHTML = qScore === QUIZ.length ? T('Perfect! You know it.', 'Ajoyib! Siz buni yaxshi bilasiz.')
+							: qScore >= 2 ? T('Good job! Read the tips and try again.', "Yaxshi! Izohlarni o'qib, qayta urinib ko'ring.")
+								: T('Keep going. Review the slides and try again.', "Davom eting. Slaydlarni ko'rib chiqib, qayta urinib ko'ring.")
+						$('#qres').classList.add('show')
+					}
+				}))
+			})
+		}
+		$('#qretry').addEventListener('click', buildQuiz)
+		buildQuiz()
+
+		/* ============ Slide 8: recap ============ */
+		const POINTS = [
+			T('We use it for things happening <b>now</b>.', "Uni <b>hozir</b> bo'layotgan ishlar uchun ishlatamiz."),
+			T('Formula: <b>subject + am / is / are + verb-ing</b>.', "Formula: <b>ega + am / is / are + fe'l-ing</b>."),
+			T('No: add <b>not</b>. Question: put <b>am / is / are</b> first.', "Inkor: <b>not</b> qo'shing. Savol: <b>am / is / are</b> ni boshiga qo'ying."),
+			T('Spelling: drop <b>e</b>, double the last letter, <b>ie → y</b>.', "Imlo: <b>e</b> ni tushiring, oxirgi harfni ikkilantiring, <b>ie → y</b>."),
+			T('State verbs (<b>love, want, know</b>) do not use -ing.', "Holat fe'llari (<b>love, want, know</b>) -ing olmaydi.")
+		]
+		$('#checks').innerHTML = POINTS.map(p => `<button class="check" aria-pressed="false"><span class="box"><i class="fa-solid fa-check"></i></span><span>${p}</span></button>`).join('')
+		function updateRecap() {
+			const n = $$('.check.on').length
+			$('#recapMsg').innerHTML = n === POINTS.length
+				? T('Great job! You are ready.', 'Barakalla! Siz tayyorsiz.')
+				: `${n} / ${POINTS.length} <span style="font-size:18px;font-family:Nunito,sans-serif;font-weight:700;color:var(--muted)">${T('Tick what you understand.', 'Tushunganingizni belgilang.')}</span>`
+		}
+		$$('.check').forEach(c => c.addEventListener('click', () => { c.setAttribute('aria-pressed', c.classList.toggle('on')); updateRecap() }))
+		updateRecap()
+
+		/* ============ Slide 9: game (8 rounds: pick the sentence / build the sentence) ============ */
+		const ROUNDS = [
+			{ t: 'pick', ic: 'fa-book-open', q: ['She is reading.', 'She reading.', 'She are reading.'], u: "U kitob o'qiyapti." },
+			{ t: 'build', ic: 'fa-person-running', w: ['He', 'is', 'running'], p: '.', u: 'U yugurayapti.' },
+			{ t: 'pick', ic: 'fa-mug-hot', q: ['I am drinking tea.', 'I is drinking tea.', 'I drinking tea.'], u: 'Men choy ichyapman.' },
+			{ t: 'build', ic: 'fa-music', w: ['They', 'are', 'singing'], p: '.', u: "Ular qo'shiq aytyapti." },
+			{ t: 'pick', ic: 'fa-bed', q: ['The cat is sleeping.', 'The cat is sleepping.', 'The cat sleeping.'], u: 'Mushuk uxlayapti.' },
+			{ t: 'build', ic: 'fa-person-swimming', w: ['We', 'are', 'not', 'swimming'], p: '.', u: 'Biz suzmayapmiz.' },
+			{ t: 'pick', ic: 'fa-pencil', q: ['He is writing a letter.', 'He is writeing a letter.', 'He is writting a letter.'], u: 'U xat yozyapti.' },
+			{ t: 'build', ic: 'fa-compact-disc', w: ['Are', 'you', 'dancing'], p: '?', u: 'Sen raqsga tushyapsanmi?' }
+		]
+		let gi = 0, gs = 0
+		function gameStart() { gi = 0; gs = 0; renderRound() }
+		function setScore() { $('#gRound').textContent = `${Math.min(gi + 1, ROUNDS.length)} / ${ROUNDS.length}`; $('#gScore').textContent = gs }
+		function feedback(ok, text, tr) {
+			const fb = $('#gFb')
+			fb.className = 'gfb ' + (ok ? 'ok' : 'no')
+			fb.innerHTML = (ok ? `<i class="fa-solid fa-circle-check"></i> ${T('Correct!', "To'g'ri!")}` : `<i class="fa-solid fa-circle-xmark"></i> ${T('Not quite.', 'Unday emas.')}`) +
+				`<div>${text}<span class="tr">${tr}</span></div>`
+			if (ok) { gs++; $('#gScore').textContent = gs }
+			const nx = $('#gNext'); nx.hidden = false; nx.focus()
+		}
+		const nextBtn = `<button class="btn" id="gNext" hidden><span>${T(gi === ROUNDS.length - 1 ? 'Finish' : 'Next', 'Keyingi')}</span><i class="fa-solid fa-arrow-right"></i></button>`
+		function renderRound() {
+			if (gi >= ROUNDS.length) return renderEnd()
+			const r = ROUNDS[gi]; setScore()
+			$('#gIco').innerHTML = `<i class="fa-solid ${r.ic}"></i>`
+			const nb = `<button class="btn" id="gNext" hidden><span>${T(gi === ROUNDS.length - 1 ? 'Finish' : 'Next', gi === ROUNDS.length - 1 ? 'Yakunlash' : 'Keyingi')}</span><i class="fa-solid fa-arrow-right"></i></button>`
+			if (r.t === 'pick') {
+				const opts = shuffle(r.q.map((s, i) => ({ s, ok: i === 0 })))
+				$('#gMain').innerHTML = `<h3 class="gq">${T('Which sentence is correct?', "Qaysi gap to'g'ri?")}</h3>
+      <div class="gopts">${opts.map((o, i) => `<button class="gopt" data-i="${i}">${o.s}</button>`).join('')}</div>
+      <div class="gfoot"><div class="gfb" id="gFb" aria-live="polite"></div><div class="gbtns">${nb}</div></div>`
+				$$('.gopt').forEach(b => b.addEventListener('click', () => {
+					const o = opts[+b.dataset.i]
+					$$('.gopt').forEach((x, i) => { x.disabled = true; if (opts[i].ok) x.classList.add('right') })
+					if (!o.ok) b.classList.add('wrong')
+					feedback(o.ok, r.q[0], r.u)
+				}))
+			} else {
+				const st = { ans: [], tiles: [], locked: false }
+				const ids = r.w.map((_, i) => i); let order = shuffle(ids)
+				while (order.every((v, i) => v === i)) order = shuffle(ids)
+				st.tiles = order
+				$('#gMain').innerHTML = `<h3 class="gq">${T('Put the words in order.', "So'zlarni tartibga keltiring.")}</h3>
+      <div class="hintline">${r.u}</div>
+      <div class="slots" id="slots"></div><div class="tiles" id="tiles"></div>
+      <div class="gfoot"><div class="gfb" id="gFb" aria-live="polite"></div>
+        <div class="gbtns"><button class="btn btn-ghost" id="gClear"><span>${T('Clear', 'Tozalash')}</span></button>
+        <button class="btn" id="gCheck" disabled><span>${T('Check', 'Tekshirish')}</span></button>${nb}</div></div>`
+				const draw = () => {
+					$('#slots').innerHTML = (st.ans.length ? st.ans.map(id => `<button class="tile" data-id="${id}" ${st.locked ? 'disabled' : ''}>${r.w[id]}</button>`).join('') : `<span class="ph">${T('Tap the words below', "Pastdagi so'zlarni bosing")}</span>`) + `<span class="punct">${r.p}</span>`
+					$('#tiles').innerHTML = st.tiles.filter(id => !st.ans.includes(id)).map(id => `<button class="tile" data-id="${id}" ${st.locked ? 'disabled' : ''}>${r.w[id]}</button>`).join('')
+					$('#gCheck').disabled = st.locked || st.ans.length !== r.w.length
+					$$('#tiles .tile').forEach(b => b.addEventListener('click', () => { st.ans.push(+b.dataset.id); draw() }))
+					$$('#slots .tile').forEach(b => b.addEventListener('click', () => { st.ans = st.ans.filter(x => x !== +b.dataset.id); draw() }))
+				}
+				draw()
+				$('#gClear').addEventListener('click', () => { if (!st.locked) { st.ans = []; draw() } })
+				$('#gCheck').addEventListener('click', () => {
+					st.locked = true; draw(); $('#gClear').disabled = true
+					const ok = st.ans.every((id, i) => id === i)
+					feedback(ok, r.w.join(' ') + r.p, r.u)
+				})
+			}
+			$('#gNext').addEventListener('click', () => { gi++; renderRound() })
+		}
+		function renderEnd() {
+			setScore()
+			const n = ROUNDS.length, stars = gs >= 7 ? 3 : gs >= 5 ? 2 : 1
+			$('#gIco').innerHTML = '<i class="fa-solid fa-trophy"></i>'
+			const msg = gs >= 7 ? T('Excellent! You really know it.', "Ajoyib! Siz buni juda yaxshi bilasiz.")
+				: gs >= 5 ? T('Good job! Play again to get 3 stars.', "Yaxshi! 3 ta yulduz olish uchun yana o'ynang.")
+					: T('Nice try! Review the slides and play again.', "Yaxshi urinish! Slaydlarni takrorlab, yana o'ynang.")
+			$('#gMain').innerHTML = `<div class="gend">
+    <div class="stars">${[1, 2, 3].map(i => `<i class="fa-solid fa-star ${i <= stars ? 'on' : ''}"></i>`).join('')}</div>
+    <h3>${T(`You scored ${gs} / ${n}`, `Natija: ${gs} / ${n}`)}</h3><p>${msg}</p>
+    <div class="gbtns"><button class="btn" id="gAgain"><i class="fa-solid fa-rotate-left"></i><span>${T('Play again', "Qayta o'ynash")}</span></button>
+    <button class="btn btn-ghost" id="gHome"><span>${T('Back to start', 'Boshiga qaytish')}</span></button></div></div>`
+			$('#gAgain').addEventListener('click', gameStart)
+			$('#gHome').addEventListener('click', () => go(0))
+		}
+		gameStart()
+
+		go(0);
+	</script>
+</body>
+
+</html>
